@@ -1,13 +1,17 @@
-import { useState } from 'react'
 import type { Question } from '../types/question'
 
 type QuestionCardProps = {
   question: Question
+  selectedAnswer: string | null
+  onAnswer: (answer: string) => void
 }
 
-function QuestionCard({ question }: QuestionCardProps) {
+function QuestionCard({
+  question,
+  selectedAnswer,
+  onAnswer,
+}: QuestionCardProps) {
 
- const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
  const isCorrect =
   selectedAnswer !== null &&
   selectedAnswer === question.correctAnswer
@@ -28,7 +32,7 @@ function QuestionCard({ question }: QuestionCardProps) {
         {question.options.map((option) => (
           <button
             key={option.label}
-            onClick={() => setSelectedAnswer(option.label)}
+            onClick={() => onAnswer(option.label)}
             className={`flex w-full items-center gap-3 rounded-xl border p-4 text-left transition ${
               selectedAnswer === option.label
                 ? 'border-slate-900 bg-slate-100'

@@ -16,4 +16,36 @@ export const questions: Question[] = [
     correctAnswer: 'B',
     explanation: 'Divide both sides of the equation by 2. Therefore, x = 5.',
   },
+
+  {
+    id: 2,
+    year: 2025,
+    subject: 'English Language',
+    topic: 'Vocabulary',
+    question: 'Choose the word that is closest in meaning to "rapid".',
+    options: [
+      { label: 'A', text: 'Slow' },
+      { label: 'B', text: 'Quick' },
+      { label: 'C', text: 'Weak' },
+      { label: 'D', text: 'Late' },
+    ],
+    correctAnswer: 'B',
+    explanation: '"Rapid" means happening very quickly. Therefore, "quick" is the closest in meaning.',
+  },
+
+  {
+    id: 3,
+    year: 2025,
+    subject: 'Physics',
+    topic: 'Motion',
+    question: 'What is the SI unit of speed?',
+    options: [
+      { label: 'A', text: 'Newton' },
+      { label: 'B', text: 'Joule' },
+      { label: 'C', text: 'Metre per second' },
+      { label: 'D', text: 'Watt' },
+    ],
+    correctAnswer: 'C',
+    explanation: 'The SI unit of speed is metre per second (m/s).',
+  },
 ]
