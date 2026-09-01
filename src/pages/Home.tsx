@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Header from '../components/Header'
 import PracticeCard from '../components/PracticeCard'
 import QuestionCard from '../components/QuestionCard'
+import Results from './Results'
 import { questions } from '../data/questions'
 
 const practiceOptions = [
@@ -24,6 +25,7 @@ const practiceOptions = [
 function Home() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const currentQuestion = questions[currentQuestionIndex]
   const currentAnswer = answers[currentQuestion.id]
@@ -31,6 +33,14 @@ function Home() {
   const answeredCount = Object.keys(answers).length
 
   const allQuestionsAnswered = answeredCount === questions.length
+  
+  const score = questions.reduce((total, question) => {
+  if (answers[question.id] === question.correctAnswer) {
+    return total + 1
+  }
+
+  return total
+}, 0)
 
   const handleAnswer = (answer: string) => {
     setAnswers((previousAnswers) => ({
@@ -38,6 +48,17 @@ function Home() {
       [questions[currentQuestionIndex].id]: answer,
     }))
   }
+
+if (isSubmitted) {
+  return (
+    <Results
+      score={score}
+      totalQuestions={questions.length}
+      incorrectAnswers={questions.length - score}
+    />
+  )
+}
+
   return (
     <div className="min-h-screen bg-slate-100">
       <Header />
@@ -143,7 +164,7 @@ function Home() {
                     return
                   }
 
-                  alert('Exam submitted!')
+		  setIsSubmitted(true)
                 }}
                 className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700"
               >
