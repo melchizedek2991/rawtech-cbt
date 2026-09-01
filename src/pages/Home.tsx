@@ -55,8 +55,10 @@ if (isSubmitted) {
       score={score}
       totalQuestions={questions.length}
       incorrectAnswers={questions.length - score}
+      answers={answers}
     />
   )
+
 }
 
   return (

@@ -1,10 +1,19 @@
+import { questions } from '../data/questions'
+
 type ResultsProps = {
   score: number
   totalQuestions: number
   incorrectAnswers: number
+  answers: Record<number, string>
 }
 
-function Results({ score, totalQuestions, incorrectAnswers,}: ResultsProps) {
+function Results({ 
+	score, 
+	totalQuestions, 
+	incorrectAnswers,
+	answers,
+	}: ResultsProps) 
+	{
   const percentage = Math.round((score / totalQuestions) * 100)
   const correctAnswers = score
   return (
@@ -29,6 +38,55 @@ function Results({ score, totalQuestions, incorrectAnswers,}: ResultsProps) {
         <p className="mt-3 text-lg font-semibold text-slate-700">
           {percentage}%
         </p>
+
+	<div className="mt-8 space-y-4 text-left">
+  {questions.map((question) => {
+    const studentAnswer = answers[question.id]
+    const isCorrect = studentAnswer === question.correctAnswer
+
+    return (
+      <div
+        key={question.id}
+        className="rounded-xl border border-slate-200 p-4"
+      >
+        <p className="text-sm font-semibold text-slate-900">
+          Question {question.id}
+        </p>
+
+        <p className="mt-2 text-sm text-slate-700">
+          {question.question}
+        </p>
+
+        <p className="mt-3 text-sm">
+          Your answer:{' '}
+          <span className="font-semibold">
+            {studentAnswer}
+          </span>
+        </p>
+
+        <p className="mt-1 text-sm">
+          Correct answer:{' '}
+          <span className="font-semibold">
+            {question.correctAnswer}
+          </span>
+        </p>
+
+        <p
+          className={`mt-2 text-sm font-semibold ${
+            isCorrect ? 'text-green-600' : 'text-red-600'
+          }`}
+        >
+          {isCorrect ? 'Correct' : 'Incorrect'}
+        </p>
+
+        <p className="mt-3 text-sm leading-6 text-slate-600">
+          {question.explanation}
+        </p>
+      </div>
+    )
+  })}
+</div>
+
       </div>
     </div>
   )
