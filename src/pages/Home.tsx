@@ -56,9 +56,13 @@ if (isSubmitted) {
       totalQuestions={questions.length}
       incorrectAnswers={questions.length - score}
       answers={answers}
+      onPracticeAgain={() => {
+        setAnswers({})
+        setCurrentQuestionIndex(0)
+        setIsSubmitted(false)
+      }}
     />
   )
-
 }
 
   return (

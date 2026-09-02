@@ -5,6 +5,7 @@ type ResultsProps = {
   totalQuestions: number
   incorrectAnswers: number
   answers: Record<number, string>
+  onRestart: () => void
 }
 
 function Results({ 
@@ -12,6 +13,7 @@ function Results({
 	totalQuestions, 
 	incorrectAnswers,
 	answers,
+	onRestart,
 	}: ResultsProps) 
 	{
   const percentage = Math.round((score / totalQuestions) * 100)
@@ -38,6 +40,28 @@ function Results({
         <p className="mt-3 text-lg font-semibold text-slate-700">
           {percentage}%
         </p>
+	
+	<div className="mt-6 grid grid-cols-2 gap-4">
+          <div className="rounded-xl bg-slate-100 p-4">
+            <p className="text-sm text-slate-500">
+              Correct Answers
+            </p>
+
+            <p className="mt-1 text-2xl font-bold text-slate-900">
+              {correctAnswers}
+            </p>
+         </div>
+
+         <div className="rounded-xl bg-slate-100 p-4">
+            <p className="text-sm text-slate-500">
+               Incorrect Answers
+            </p>
+
+            <p className="mt-1 text-2xl font-bold text-slate-900">
+              {incorrectAnswers}
+            </p>
+         </div>
+        </div>
 
 	<div className="mt-8 space-y-4 text-left">
   {questions.map((question) => {
@@ -86,10 +110,16 @@ function Results({
     )
   })}
 </div>
-
+	<button
+          onClick={onRestart}
+          className="mt-6 w-full rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700"
+        >
+          Practice Again
+        </button>
       </div>
     </div>
   )
+
 }
 
 export default Results
