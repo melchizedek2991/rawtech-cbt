@@ -5,10 +5,12 @@ import { questions } from '../data/questions'
 // Exam Page
 // --------------------------------
 function Exam() {
-  // --------------------------------
-  // Answer Selection State
-  // --------------------------------
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
+ 
+// --------------------------------
+// Answers State
+// Stores the student's answer for each question
+// --------------------------------
+const [answers, setAnswers] = useState<Record<number, string>>({})
 
   // --------------------------------
   // Current Question State
