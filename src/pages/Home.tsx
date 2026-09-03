@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import PracticeCard from '../components/PracticeCard'
 import QuestionCard from '../components/QuestionCard'
 import Results from './Results'
+import Exam from './Exam'
 import { questions } from '../data/questions'
 
 const practiceOptions = [
@@ -23,17 +24,29 @@ const practiceOptions = [
 ]
 
 function Home() {
+  // -----------------------------
+  // Exam State
+  // -----------------------------
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [isSubmitted, setIsSubmitted] = useState(false)
-
+  const [isExamStarted, setIsExamStarted] = useState(false)
+  
+  // -----------------------------
+  // Current Question
+  // -----------------------------
   const currentQuestion = questions[currentQuestionIndex]
   const currentAnswer = answers[currentQuestion.id]
 
+  // -----------------------------
+  // Answer Progress
+  // -----------------------------
   const answeredCount = Object.keys(answers).length
-
   const allQuestionsAnswered = answeredCount === questions.length
   
+  // -----------------------------
+  // Calculate Score
+  // -----------------------------
   const score = questions.reduce((total, question) => {
   if (answers[question.id] === question.correctAnswer) {
     return total + 1
@@ -42,12 +55,17 @@ function Home() {
   return total
 }, 0)
 
+  // -----------------------------
+  // Handle Answer Selection
+  // -----------------------------
   const handleAnswer = (answer: string) => {
     setAnswers((previousAnswers) => ({
       ...previousAnswers,
       [questions[currentQuestionIndex].id]: answer,
     }))
   }
+
+  // Show results after submission
 
 if (isSubmitted) {
   return (
@@ -56,7 +74,7 @@ if (isSubmitted) {
       totalQuestions={questions.length}
       incorrectAnswers={questions.length - score}
       answers={answers}
-      onPracticeAgain={() => {
+      onRestart={() => {
         setAnswers({})
         setCurrentQuestionIndex(0)
         setIsSubmitted(false)
@@ -65,6 +83,13 @@ if (isSubmitted) {
   )
 }
 
+// Show exam screen after starting
+
+if (isExamStarted) {
+  return <Exam />
+}
+
+// Otherwise show homepage
   return (
     <div className="min-h-screen bg-slate-100">
       <Header />
@@ -79,6 +104,13 @@ if (isSubmitted) {
             Practice with realistic JAMB CBT questions, track your performance,
             and build confidence before examination day.
           </p>
+
+          <button
+              onClick={() => setIsExamStarted(true)}
+              className="mt-8 rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-700"
+            >
+              Start JAMB CBT Exam
+          </button>
 
           <div className="mt-10 grid gap-5 text-left sm:grid-cols-3">
             {practiceOptions.map((option) => (
