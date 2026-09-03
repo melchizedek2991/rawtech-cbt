@@ -15,12 +15,31 @@ const [answers, setAnswers] = useState<Record<number, string>>({})
   // --------------------------------
   // Current Question State
   // --------------------------------
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  
+// --------------------------------
+// Current Question
+// Gets the question currently being displayed
+// --------------------------------
+const currentQuestion = questions[currentQuestionIndex]
+
+// --------------------------------
+// Current Answer
+// Gets the answer saved for the current question
+// --------------------------------
+const currentAnswer = answers[currentQuestion.id]
 
   // --------------------------------
-  // Current Question
+  // Answer Handler
+  // Saves the student's answer
+  // for the current question
   // --------------------------------
-  const currentQuestion = questions[currentQuestionIndex]
+  const handleAnswer = (answer: string) => {
+    setAnswers((previousAnswers) => ({
+      ...previousAnswers,
+      [currentQuestion.id]: answer,
+    }))
+  }
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -63,9 +82,9 @@ const [answers, setAnswers] = useState<Record<number, string>>({})
           {currentQuestion.options.map((option) => (
             <button
               key={option.label}
-              onClick={() => setSelectedAnswer(option.label)}
+              onClick={() => handleAnswer(option.label)}
               className={`w-full rounded-xl border p-4 text-left ${
-                selectedAnswer === option.label
+                currentAnswer === option.label
                   ? 'border-slate-900 bg-slate-100'
                   : 'border-slate-200 hover:bg-slate-50'
               }`}
@@ -96,15 +115,76 @@ const [answers, setAnswers] = useState<Record<number, string>>({})
                   key={question.id}
                   onClick={() => setCurrentQuestionIndex(index)}
                   className={`h-10 w-10 rounded-lg text-sm font-semibold ${
-                    index === currentQuestionIndex
-                      ? 'bg-slate-900 text-white'
+                  index === currentQuestionIndex
+                    ? 'bg-slate-900 text-white'
+                    : answers[question.id]
+                      ? 'bg-slate-200 text-slate-700'
                       : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-                  }`}
+                }`}
                 >
                   {index + 1}
                 </button>
               ))}
             </div>
+
+          </div>
+
+           {/* --------------------------------
+              Question Status Legend
+          -------------------------------- */}
+          <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-500">
+
+          {/* Current */}
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-slate-900" />
+            Current
+          </div>
+
+          {/* Answered */}
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-slate-200" />
+            Answered
+          </div>
+
+          {/* Unanswered */}
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full border border-slate-300" />
+            Unanswered
+          </div>
+
+        </div>
+      {/* --------------------------------
+            Previous / Next Navigation
+        -------------------------------- */}
+        <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
+
+          {/* Previous Button */}
+          <button
+            onClick={() => {
+              if (currentQuestionIndex > 0) {
+                setCurrentQuestionIndex(currentQuestionIndex - 1)
+              }
+            }}
+            disabled={currentQuestionIndex === 0}
+            className="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700
+             hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Previous
+          </button>
+
+          {/* Next Button */}
+          <button
+            onClick={() => {
+              if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(currentQuestionIndex + 1)
+              }
+            }}
+            disabled={currentQuestionIndex === questions.length - 1}
+            className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white
+             hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Next
+          </button>
 
           </div>
 
