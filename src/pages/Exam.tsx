@@ -2,9 +2,18 @@ import { useState } from 'react'
 import { questions } from '../data/questions'
 
 // --------------------------------
+// Exam Props
+// Defines the function Exam receives
+// from its parent component
+// --------------------------------
+type ExamProps = {
+  onFinish: (answers: Record<number, string>) => void
+}
+
+// --------------------------------
 // Exam Page
 // --------------------------------
-function Exam() {
+function Exam({ onFinish }: ExamProps) {
  
 // --------------------------------
 // Answers State
@@ -154,9 +163,9 @@ const currentAnswer = answers[currentQuestion.id]
 
         </div>
       {/* --------------------------------
-            Previous / Next Navigation
-        -------------------------------- */}
-        <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
+        Previous / Next Navigation
+      -------------------------------- */}
+      <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
 
           {/* Previous Button */}
           <button
@@ -167,26 +176,33 @@ const currentAnswer = answers[currentQuestion.id]
             }}
             disabled={currentQuestionIndex === 0}
             className="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700
-             hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             Previous
           </button>
 
-          {/* Next Button */}
+          {/* Next / Finish Button */}
           <button
             onClick={() => {
               if (currentQuestionIndex < questions.length - 1) {
                 setCurrentQuestionIndex(currentQuestionIndex + 1)
+                return
               }
+
+              // --------------------------------
+              // Send Answers Back To Home
+              // --------------------------------
+              onFinish(answers)
             }}
-            disabled={currentQuestionIndex === questions.length - 1}
             className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white
-             hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+              hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Next
+            {currentQuestionIndex === questions.length - 1
+              ? 'Finish Exam'
+              : 'Next'}
           </button>
 
-          </div>
+        </div>
 
         </div>
 
