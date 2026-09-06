@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { questions } from '../data/questions'
 
 // --------------------------------
@@ -21,10 +21,34 @@ function Exam({ onFinish }: ExamProps) {
 // --------------------------------
 const [answers, setAnswers] = useState<Record<number, string>>({})
 
-  // --------------------------------
-  // Current Question State
-  // --------------------------------
+// --------------------------------
+// Current Question State
+// Stores the position of the question
+// currently being displayed
+// --------------------------------
 const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+
+// --------------------------------
+// Timer State
+// Stores the remaining exam time
+// in seconds
+// --------------------------------
+const [timeRemaining, setTimeRemaining] = useState(1800)
+
+// --------------------------------
+// Timer Effect
+// Decreases the remaining time
+// every second
+// --------------------------------
+useEffect(() => {
+  const timer = setInterval(() => {
+    setTimeRemaining((previousTime) => previousTime - 1)
+  }, 1000)
+
+  return () => {
+    clearInterval(timer)
+  }
+}, [])
   
 // --------------------------------
 // Current Question
@@ -37,6 +61,14 @@ const currentQuestion = questions[currentQuestionIndex]
 // Gets the answer saved for the current question
 // --------------------------------
 const currentAnswer = answers[currentQuestion.id]
+
+// --------------------------------
+// Timer Display
+// Converts remaining seconds into
+// minutes and seconds for the UI
+// --------------------------------
+const minutes = Math.floor(timeRemaining / 60)
+const seconds = timeRemaining % 60
 
   // --------------------------------
   // Answer Handler
@@ -56,17 +88,35 @@ const currentAnswer = answers[currentQuestion.id]
       {/* --------------------------------
           Exam Header
       -------------------------------- */}
-      <header className="border-b border-slate-200 bg-white px-4 py-4">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <h1 className="text-lg font-bold text-slate-900">
-            RAWTECH JAMB CBT
-          </h1>
 
-          <p className="text-sm font-semibold text-slate-600">
-            {currentQuestionIndex + 1} of {questions.length}
-          </p>
-        </div>
-      </header>
+      {/* --------------------------------
+    Exam Header
+    -------------------------------- */}
+<header className="border-b border-slate-200 bg-white px-4 py-4">
+  <div className="mx-auto flex max-w-4xl items-center justify-between">
+
+    {/* Exam Name */}
+    <h1 className="text-lg font-bold text-slate-900">
+      RAWTECH JAMB CBT
+    </h1>
+
+    {/* Timer + Question Counter */}
+    <div className="text-right">
+
+      {/* Timer */}
+      <p className="text-sm font-bold text-slate-900">
+        {minutes}:{seconds.toString().padStart(2, '0')}
+      </p>
+
+      {/* Question Counter */}
+      <p className="text-xs font-medium text-slate-500">
+        {currentQuestionIndex + 1} of {questions.length}
+      </p>
+
+    </div>
+
+  </div>
+</header>
 
 
       {/* --------------------------------
