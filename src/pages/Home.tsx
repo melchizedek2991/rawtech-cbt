@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import PracticeCard from '../components/PracticeCard'
 import Exam from './Exam'
 import Results from './Results'
+import { questions } from '../data/questions'
 
 // --------------------------------
 // Practice Options
@@ -50,15 +51,47 @@ function Home() {
   // --------------------------------
   const [isExamFinished, setIsExamFinished] = useState(false)
 
+    // --------------------------------
+    // Calculate Exam Score
+    // Counts questions answered correctly
+    // --------------------------------
+    const score = questions.reduce((total, question) => {
+      if (examAnswers[question.id] === question.correctAnswer) {
+        return total + 1
+      }
+
+      return total
+    }, 0)
+
+  // --------------------------------
+  // Calculate Unanswered Questions
+  // Counts questions the student skipped
+  // --------------------------------
+  const unansweredQuestions = questions.reduce((total, question) => {
+    if (!examAnswers[question.id]) {
+      return total + 1
+    }
+
+    return total
+  }, 0)
+
+  // --------------------------------
+  // Calculate Incorrect Answers
+  // Everything answered that was not correct
+  // --------------------------------
+  const incorrectAnswers =
+    questions.length - score - unansweredQuestions
+
   // --------------------------------
   // Show Results
   // --------------------------------
   if (isExamFinished) {
     return (
       <Results
-        score={0}
-        totalQuestions={0}
-        incorrectAnswers={0}
+        score={score}
+        totalQuestions={questions.length}
+        incorrectAnswers={incorrectAnswers}
+        unansweredQuestions={unansweredQuestions}
         answers={examAnswers}
         onRestart={() => {
           setExamAnswers({})
