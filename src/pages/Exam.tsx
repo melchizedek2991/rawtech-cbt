@@ -42,13 +42,30 @@ const [timeRemaining, setTimeRemaining] = useState(1800)
 // --------------------------------
 useEffect(() => {
   const timer = setInterval(() => {
-    setTimeRemaining((previousTime) => previousTime - 1)
+    setTimeRemaining((previousTime) => {
+      if (previousTime <= 1) {
+        return 0
+      }
+
+      return previousTime - 1
+    })
   }, 1000)
 
   return () => {
     clearInterval(timer)
   }
 }, [])
+
+// --------------------------------
+// Automatic Exam Completion
+// Finishes the exam when the timer
+// reaches zero
+// --------------------------------
+useEffect(() => {
+  if (timeRemaining === 0) {
+    onFinish(answers)
+  }
+}, [timeRemaining, answers, onFinish])
   
 // --------------------------------
 // Current Question
