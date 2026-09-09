@@ -19,7 +19,7 @@ import {
 // --------------------------------
 // Practice Options
 // Contains the practice choices
-// shown on the homepage
+// shown on the homepage.
 // --------------------------------
 const practiceOptions = [
   {
@@ -46,18 +46,18 @@ function Home() {
   // --------------------------------
   // Exam Started State
   // Controls whether the Exam page
-  // should be displayed
-  // --------------------------------
+  // should be displayed.
+// --------------------------------
   const [isExamStarted, setIsExamStarted] = useState(false)
 
+  // --------------------------------
+  // Practice Mode State
+  // Stores the practice option selected
+  // by the student.
 // --------------------------------
-// Practice Mode State
-// Stores the practice option selected
-// by the student.
-// --------------------------------
-const [practiceMode, setPracticeMode] = useState<string | null>(null)
+  const [practiceMode, setPracticeMode] = useState<string | null>(null)
 
-// --------------------------------
+  // --------------------------------
 // Practice Selection State
 // Stores the specific year, subject,
 // or topic selected by the student.
@@ -66,43 +66,43 @@ const [practiceSelection, setPracticeSelection] = useState<
   string | number | null
 >(null)
 
+  // --------------------------------
+  // Practice Questions State
+  // Stores the questions selected for
+  // the current practice session.
 // --------------------------------
-// Practice Questions State
-// Stores the questions selected for
-// the current practice session.
-// --------------------------------
-const [practiceQuestions, setPracticeQuestions] = useState(questions)
-
+  const [practiceQuestions, setPracticeQuestions] = useState(questions)
 
   // --------------------------------
   // Exam Answers
-  // Stores answers received from Exam
-  // --------------------------------
+  // Stores answers received from Exam.
+// --------------------------------
   const [examAnswers, setExamAnswers] = useState<Record<number, string>>({})
 
   // --------------------------------
   // Exam Completion State
-  // Tells Home whether the exam has finished
-  // --------------------------------
+  // Tells Home whether the exam
+  // has finished.
+// --------------------------------
   const [isExamFinished, setIsExamFinished] = useState(false)
 
-    // --------------------------------
-    // Calculate Exam Score
-    // Counts questions answered correctly
-    // --------------------------------
-    const score = questions.reduce((total, question) => {
-      if (examAnswers[question.id] === question.correctAnswer) {
-        return total + 1
-      }
+  // --------------------------------
+  // Calculate Exam Score
+  // Counts questions answered correctly.
+// --------------------------------
+  const score = practiceQuestions.reduce((total, question) => {
+    if (examAnswers[question.id] === question.correctAnswer) {
+      return total + 1
+    }
 
-      return total
-    }, 0)
+    return total
+  }, 0)
 
   // --------------------------------
   // Calculate Unanswered Questions
-  // Counts questions the student skipped
-  // --------------------------------
-  const unansweredQuestions = questions.reduce((total, question) => {
+  // Counts questions the student skipped.
+// --------------------------------
+  const unansweredQuestions = practiceQuestions.reduce((total, question) => {
     if (!examAnswers[question.id]) {
       return total + 1
     }
@@ -112,10 +112,10 @@ const [practiceQuestions, setPracticeQuestions] = useState(questions)
 
   // --------------------------------
   // Calculate Incorrect Answers
-  // Everything answered that was not correct
-  // --------------------------------
+  // Everything answered that was not correct.
+// --------------------------------
   const incorrectAnswers =
-    questions.length - score - unansweredQuestions
+    practiceQuestions.length - score - unansweredQuestions
 
   // --------------------------------
   // Show Results
@@ -124,7 +124,7 @@ const [practiceQuestions, setPracticeQuestions] = useState(questions)
     return (
       <Results
         score={score}
-        totalQuestions={questions.length}
+        totalQuestions={practiceQuestions.length}
         incorrectAnswers={incorrectAnswers}
         unansweredQuestions={unansweredQuestions}
         answers={examAnswers}
@@ -132,6 +132,8 @@ const [practiceQuestions, setPracticeQuestions] = useState(questions)
           setExamAnswers({})
           setIsExamFinished(false)
           setIsExamStarted(false)
+          setPracticeMode(null)
+          setPracticeQuestions(questions)
         }}
       />
     )
@@ -139,26 +141,22 @@ const [practiceQuestions, setPracticeQuestions] = useState(questions)
 
   // --------------------------------
   // Show Exam
-  // --------------------------------
+  // Passes the selected questions
+  // into the Exam component.
+// --------------------------------
   if (isExamStarted) {
     return (
-
-	{/* --------------------------------
-          Exam
-          Passes the questions selected
-          by the student into the exam.
-	-------------------------------- */}
-	<Exam
+      <Exam
         questions={practiceQuestions}
-          onFinish={(answers) => {
-            setExamAnswers(answers)
-            setIsExamFinished(true)
-          }}
-	/>
+        onFinish={(answers) => {
+          setExamAnswers(answers)
+          setIsExamFinished(true)
+        }}
+      />
     )
   }
 
- // --------------------------------
+// --------------------------------
 // Practice Mode Screen
 // Displays the available choices
 // for the selected practice mode.
@@ -167,46 +165,54 @@ if (practiceMode) {
   let practiceChoices: (string | number)[] = []
 
   // --------------------------------
-  // Select the correct choices
-  // based on the selected mode.
+  // Select choices for Practice by Year
   // --------------------------------
   if (practiceMode === 'Practice by Year') {
     practiceChoices = practiceYears
   }
 
+  // --------------------------------
+  // Select choices for Practice by Subject
+  // --------------------------------
   if (practiceMode === 'Practice by Subject') {
     practiceChoices = practiceSubjects
   }
 
+  // --------------------------------
+  // Select choices for Practice by Topic
+  // --------------------------------
   if (practiceMode === 'Practice by Topic') {
     practiceChoices = practiceTopics
   }
 
   // --------------------------------
-// Filter Questions
-// Finds questions matching the
-// student's selected practice option.
-// --------------------------------
-  if (practiceMode === 'Practice by Year') {
-    return question.year === practiceSelection
-  }
+  // Filter Questions
+  // Finds questions matching the
+  // student's selected choice.
+  // --------------------------------
+  const selectedQuestions = questions.filter((question) => {
+    if (practiceMode === 'Practice by Year') {
+      return question.year === practiceSelection
+    }
 
-  if (practiceMode === 'Practice by Subject') {
-    return question.subject === practiceSelection
-  }
+    if (practiceMode === 'Practice by Subject') {
+      return question.subject === practiceSelection
+    }
 
-  if (practiceMode === 'Practice by Topic') {
-    return question.topic === practiceSelection
-  }
+    if (practiceMode === 'Practice by Topic') {
+      return question.topic === practiceSelection
+    }
 
-  return false
-})
+    return false
+  })
 
   return (
     <div className="min-h-screen bg-slate-100">
+
       <Header />
 
       <main className="mx-auto max-w-4xl px-4 py-6">
+
         <div className="rounded-2xl bg-white p-6 shadow-sm">
 
           {/* Practice Mode Heading */}
@@ -223,43 +229,72 @@ if (practiceMode) {
             {practiceChoices.map((choice) => (
               <button
                 key={choice}
-                onClick={() => {
-  const selectedQuestions = questions.filter((question) => {
-    if (practiceMode === 'Practice by Year') {
-      return question.year === choice
-    }
-
-    if (practiceMode === 'Practice by Subject') {
-      return question.subject === choice
-    }
-
-    if (practiceMode === 'Practice by Topic') {
-      return question.topic === choice
-    }
-
-    return false
-  })
-
-  setPracticeQuestions(selectedQuestions)
-  setIsExamStarted(true)
-}}
-                className="rounded-xl border border-slate-200 p-4 text-left font-semibold text-slate-900 hover:bg-slate-50"
+                onClick={() => setPracticeSelection(choice)}
+                className={`rounded-xl border p-4 text-left font-semibold transition ${
+                  practiceSelection === choice
+                    ? 'border-slate-900 bg-slate-100 text-slate-900'
+                    : 'border-slate-200 text-slate-900 hover:bg-slate-50'
+                }`}
               >
                 {choice}
               </button>
             ))}
           </div>
 
+          {/* Practice Information */}
+          {practiceSelection !== null && (
+            <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
+
+              {/* Selected Practice */}
+              <h2 className="text-lg font-bold text-slate-900">
+                {practiceSelection}
+              </h2>
+
+              {/* Available Questions */}
+              <p className="mt-2 text-sm text-slate-600">
+                {selectedQuestions.length === 1
+                  ? '1 question available'
+                  : `${selectedQuestions.length} questions available`}
+              </p>
+
+              {/* Start Practice */}
+              {selectedQuestions.length > 0 && (
+                <button
+                  onClick={() => {
+                    setPracticeQuestions(selectedQuestions)
+                    setIsExamStarted(true)
+                  }}
+                  className="mt-5 rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700"
+                >
+                  Start Practice
+                </button>
+              )}
+
+              {/* No Questions Message */}
+              {selectedQuestions.length === 0 && (
+                <p className="mt-4 text-sm font-medium text-slate-500">
+                  No questions are currently available for this selection.
+                </p>
+              )}
+
+            </div>
+          )}
+
           {/* Back to Practice Options */}
           <button
-            onClick={() => setPracticeMode(null)}
+            onClick={() => {
+              setPracticeMode(null)
+              setPracticeSelection(null)
+            }}
             className="mt-6 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
           >
             Back to Practice Options
           </button>
 
         </div>
+
       </main>
+
     </div>
   )
 }
@@ -289,7 +324,10 @@ if (practiceMode) {
               Start Exam Button
           -------------------------------- */}
           <button
-            onClick={() => setIsExamStarted(true)}
+            onClick={() => {
+              setPracticeQuestions(questions)
+              setIsExamStarted(true)
+            }}
             className="mt-8 rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-700"
           >
             Start JAMB CBT Exam
@@ -299,16 +337,19 @@ if (practiceMode) {
               Practice Options
           -------------------------------- */}
           <div className="mt-10 grid gap-5 text-left sm:grid-cols-3">
-		{practiceOptions.map((option) => (
-		  <PracticeCard
-                    key={option.title}
-                    title={option.title}
-                    description={option.description}
-                    onExplore={() => {
-		    setPracticeMode(option.title)
-			}}
-                    />
-                 ))}
+
+            {practiceOptions.map((option) => (
+              <PracticeCard
+                key={option.title}
+                title={option.title}
+                description={option.description}
+                onExplore={() => {
+                  setPracticeMode(option.title)
+                  setPracticeSelection(null)
+                }}
+              />
+            ))}
+
           </div>
 
         </div>

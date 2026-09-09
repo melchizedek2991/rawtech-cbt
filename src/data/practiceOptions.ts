@@ -1,21 +1,31 @@
 // --------------------------------
 // Practice Selection Data
-// Defines the choices students can
-// make before starting practice.
+// Builds available years, subjects,
+// and topics directly from the questions.
 // --------------------------------
 
+import { questions } from './questions'
+
+// --------------------------------
+// Practice Years
+// Gets unique years from the questions.
+// --------------------------------
 export const practiceYears = [
-  2025,
+  ...new Set(questions.map((question) => question.year)),
 ]
 
+// --------------------------------
+// Practice Subjects
+// Gets unique subjects from the questions.
+// --------------------------------
 export const practiceSubjects = [
-  'Mathematics',
-  'English Language',
-  'Physics',
+  ...new Set(questions.map((question) => question.subject)),
 ]
 
+// --------------------------------
+// Practice Topics
+// Gets unique topics from the questions.
+// --------------------------------
 export const practiceTopics = [
-  'Algebra',
-  'Vocabulary',
-  'Motion',
+  ...new Set(questions.map((question) => question.topic)),
 ]

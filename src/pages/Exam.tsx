@@ -157,7 +157,7 @@ const seconds = timeRemaining % 60
         <div className="rounded-2xl bg-white p-5 shadow-sm">
 
           <p className="text-sm font-medium text-slate-500">
-            Mathematics
+             {currentQuestion.subject}
           </p>
 
           <h2 className="mt-4 text-lg font-semibold leading-7 text-slate-900">
