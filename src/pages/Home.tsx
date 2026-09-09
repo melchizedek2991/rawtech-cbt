@@ -6,6 +6,17 @@ import Results from './Results'
 import { questions } from '../data/questions'
 
 // --------------------------------
+// Practice Selection Data
+// Provides the available years,
+// subjects, and topics.
+// --------------------------------
+import {
+  practiceYears,
+  practiceSubjects,
+  practiceTopics,
+} from '../data/practiceOptions'
+
+// --------------------------------
 // Practice Options
 // Contains the practice choices
 // shown on the homepage
@@ -45,6 +56,15 @@ function Home() {
 // by the student.
 // --------------------------------
 const [practiceMode, setPracticeMode] = useState<string | null>(null)
+
+// --------------------------------
+// Practice Selection State
+// Stores the specific year, subject,
+// or topic selected by the student.
+// --------------------------------
+const [practiceSelection, setPracticeSelection] = useState<
+  string | number | null
+>(null)
 
 
   // --------------------------------
@@ -123,6 +143,94 @@ const [practiceMode, setPracticeMode] = useState<string | null>(null)
       />
     )
   }
+
+ // --------------------------------
+// Practice Mode Screen
+// Displays the available choices
+// for the selected practice mode.
+// --------------------------------
+if (practiceMode) {
+  let practiceChoices: (string | number)[] = []
+
+  // --------------------------------
+  // Select the correct choices
+  // based on the selected mode.
+  // --------------------------------
+  if (practiceMode === 'Practice by Year') {
+    practiceChoices = practiceYears
+  }
+
+  if (practiceMode === 'Practice by Subject') {
+    practiceChoices = practiceSubjects
+  }
+
+  if (practiceMode === 'Practice by Topic') {
+    practiceChoices = practiceTopics
+  }
+
+  // --------------------------------
+// Filter Questions
+// Finds questions matching the
+// student's selected practice option.
+// --------------------------------
+const filteredQuestions = questions.filter((question) => {
+  if (practiceMode === 'Practice by Year') {
+    return question.year === practiceSelection
+  }
+
+  if (practiceMode === 'Practice by Subject') {
+    return question.subject === practiceSelection
+  }
+
+  if (practiceMode === 'Practice by Topic') {
+    return question.topic === practiceSelection
+  }
+
+  return false
+})
+
+  return (
+    <div className="min-h-screen bg-slate-100">
+      <Header />
+
+      <main className="mx-auto max-w-4xl px-4 py-6">
+        <div className="rounded-2xl bg-white p-6 shadow-sm">
+
+          {/* Practice Mode Heading */}
+          <h1 className="text-2xl font-bold text-slate-900">
+            {practiceMode}
+          </h1>
+
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Choose an option to continue.
+          </p>
+
+          {/* Practice Choices */}
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {practiceChoices.map((choice) => (
+              <button
+                key={choice}
+                onClick={() => setPracticeSelection(choice)}
+                className="rounded-xl border border-slate-200 p-4 text-left font-semibold text-slate-900 hover:bg-slate-50"
+              >
+                {choice}
+              </button>
+            ))}
+          </div>
+
+          {/* Back to Practice Options */}
+          <button
+            onClick={() => setPracticeMode(null)}
+            className="mt-6 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          >
+            Back to Practice Options
+          </button>
+
+        </div>
+      </main>
+    </div>
+  )
+}
 
   // --------------------------------
   // Show Homepage
