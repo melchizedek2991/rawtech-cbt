@@ -1,6 +1,33 @@
 import { useEffect, useState } from 'react'
 import { questions } from '../data/questions'
 
+
+// --------------------------------
+// Exam Header Component
+// Displays the exam title and timer.
+// --------------------------------
+import ExamHeader from '../components/exam/ExamHeader'
+
+// --------------------------------
+// Question Navigator Component
+// Allows the student to jump between
+// exam questions.
+// --------------------------------
+import QuestionNavigator from '../components/exam/QuestionNavigator'
+
+// --------------------------------
+// Exam Navigation Component
+// Handles Previous, Next, and
+// Finish Exam navigation.
+// --------------------------------
+import ExamNavigation from '../components/exam/ExamNavigation'
+
+// --------------------------------
+// Submit Confirmation Component
+// Handles manual exam submission.
+// --------------------------------
+import SubmitConfirmation from '../components/exam/SubmitConfirmation'
+
 // --------------------------------
 // Exam Props
 // Defines the function Exam receives
@@ -34,6 +61,13 @@ const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
 // in seconds
 // --------------------------------
 const [timeRemaining, setTimeRemaining] = useState(1800)
+
+// --------------------------------
+// Submit Confirmation State
+// Controls whether the student sees
+// the exam submission confirmation
+// --------------------------------
+const [isSubmitConfirmationOpen, setIsSubmitConfirmationOpen] = useState(false)
 
 // --------------------------------
 // Timer Effect
@@ -101,41 +135,17 @@ const seconds = timeRemaining % 60
 
   return (
     <div className="min-h-screen bg-slate-100">
-
-      {/* --------------------------------
-          Exam Header
+	{/* --------------------------------
+          Exam Header Component
+          Receives timer and question
+          information from Exam.tsx
       -------------------------------- */}
-
-      {/* --------------------------------
-    Exam Header
-    -------------------------------- */}
-<header className="border-b border-slate-200 bg-white px-4 py-4">
-  <div className="mx-auto flex max-w-4xl items-center justify-between">
-
-    {/* Exam Name */}
-    <h1 className="text-lg font-bold text-slate-900">
-      RAWTECH JAMB CBT
-    </h1>
-
-    {/* Timer + Question Counter */}
-    <div className="text-right">
-
-      {/* Timer */}
-      <p className="text-sm font-bold text-slate-900">
-        {minutes}:{seconds.toString().padStart(2, '0')}
-      </p>
-
-      {/* Question Counter */}
-      <p className="text-xs font-medium text-slate-500">
-        {currentQuestionIndex + 1} of {questions.length}
-      </p>
-
-    </div>
-
-  </div>
-</header>
-
-
+      <ExamHeader
+        minutes={minutes}
+        seconds={seconds}
+        currentQuestion={currentQuestionIndex + 1}
+        totalQuestions={questions.length}
+      />
       {/* --------------------------------
           Exam Content
       -------------------------------- */}
@@ -176,102 +186,53 @@ const seconds = timeRemaining % 60
           ))}
         </div>
 
-        {/* --------------------------------
-              Question Navigator
-          -------------------------------- */}
-          <div className="mt-8 border-t border-slate-200 pt-6">
 
-            <p className="mb-3 text-sm font-semibold text-slate-700">
-              Questions
-            </p>
+{/* --------------------------------
+    Question Navigator Component
+-------------------------------- */}
+<QuestionNavigator
+  questions={questions}
+  answers={answers}
+  currentQuestionIndex={currentQuestionIndex}
+  onQuestionSelect={(index) => setCurrentQuestionIndex(index)}
+/>
 
-            <div className="flex flex-wrap gap-2">
-              {questions.map((question, index) => (
-                <button
-                  key={question.id}
-                  onClick={() => setCurrentQuestionIndex(index)}
-                  className={`h-10 w-10 rounded-lg text-sm font-semibold ${
-                  index === currentQuestionIndex
-                    ? 'bg-slate-900 text-white'
-                    : answers[question.id]
-                      ? 'bg-slate-200 text-slate-700'
-                      : 'border border-slate-300 text-slate-700 hover:bg-slate-50'
-                }`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
+     
+{/*------------------------------
+Exam Navigation Component
+--------------------------------*/}
+<ExamNavigation
+  currentQuestionIndex={currentQuestionIndex}
+  totalQuestions={questions.length}
+  onPrevious={() => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+    }
+  }}
+  onNext={() => {
+    setCurrentQuestionIndex(currentQuestionIndex + 1)
+  }}
+  onFinish={() => {
+    // --------------------------------
+    // Open Submit Confirmation
+    // Instead of submitting immediately
+    // --------------------------------
+    setIsSubmitConfirmationOpen(true)
+  }}
+/>
 
-          </div>
+  
+{/* --------------------------------
+Submit Confirmation Component
+--------------------------------*/}
+{isSubmitConfirmationOpen && (
+  <SubmitConfirmation
+    onCancel={() => setIsSubmitConfirmationOpen(false)}
+    onConfirm={() => onFinish(answers)}
+  />
+)}
 
-           {/* --------------------------------
-              Question Status Legend
-          -------------------------------- */}
-          <div className="mt-5 flex flex-wrap gap-4 text-xs text-slate-500">
-
-          {/* Current */}
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-slate-900" />
-            Current
-          </div>
-
-          {/* Answered */}
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full bg-slate-200" />
-            Answered
-          </div>
-
-          {/* Unanswered */}
-          <div className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-full border border-slate-300" />
-            Unanswered
-          </div>
-
-        </div>
-      {/* --------------------------------
-        Previous / Next Navigation
-      -------------------------------- */}
-      <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-6">
-
-          {/* Previous Button */}
-          <button
-            onClick={() => {
-              if (currentQuestionIndex > 0) {
-                setCurrentQuestionIndex(currentQuestionIndex - 1)
-              }
-            }}
-            disabled={currentQuestionIndex === 0}
-            className="rounded-lg border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700
-              hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Previous
-          </button>
-
-          {/* Next / Finish Button */}
-          <button
-            onClick={() => {
-              if (currentQuestionIndex < questions.length - 1) {
-                setCurrentQuestionIndex(currentQuestionIndex + 1)
-                return
-              }
-
-              // --------------------------------
-              // Send Answers Back To Home
-              // --------------------------------
-              onFinish(answers)
-            }}
-            className="rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white
-              hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {currentQuestionIndex === questions.length - 1
-              ? 'Finish Exam'
-              : 'Next'}
-          </button>
-
-        </div>
-
-        </div>
+</div>
 
       </main>
 

@@ -39,6 +39,14 @@ function Home() {
   // --------------------------------
   const [isExamStarted, setIsExamStarted] = useState(false)
 
+// --------------------------------
+// Practice Mode State
+// Stores the practice option selected
+// by the student.
+// --------------------------------
+const [practiceMode, setPracticeMode] = useState<string | null>(null)
+
+
   // --------------------------------
   // Exam Answers
   // Stores answers received from Exam
@@ -151,15 +159,16 @@ function Home() {
               Practice Options
           -------------------------------- */}
           <div className="mt-10 grid gap-5 text-left sm:grid-cols-3">
-
-            {practiceOptions.map((option) => (
-              <PracticeCard
-                key={option.title}
-                title={option.title}
-                description={option.description}
-              />
-            ))}
-
+		{practiceOptions.map((option) => (
+		  <PracticeCard
+                    key={option.title}
+                    title={option.title}
+                    description={option.description}
+                    onExplore={() => {
+		    setPracticeMode(option.title)
+			}}
+                    />
+                 ))}
           </div>
 
         </div>
