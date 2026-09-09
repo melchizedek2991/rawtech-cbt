@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
-import { questions } from '../data/questions'
-
+// --------------------------------
+// Question Type
+// Describes the structure of each
+// question received by the exam.
+// --------------------------------
+import type { Question } from '../types/question'
 
 // --------------------------------
 // Exam Header Component
@@ -30,18 +34,17 @@ import SubmitConfirmation from '../components/exam/SubmitConfirmation'
 
 // --------------------------------
 // Exam Props
-// Defines the function Exam receives
-// from its parent component
+// Receives the questions that the
+// student selected for this exam.
 // --------------------------------
 type ExamProps = {
+  questions: Question[]
   onFinish: (answers: Record<number, string>) => void
 }
 
-// --------------------------------
-// Exam Page
-// --------------------------------
-function Exam({ onFinish }: ExamProps) {
- 
+
+function Exam({ questions, onFinish }: ExamProps) {
+
 // --------------------------------
 // Answers State
 // Stores the student's answer for each question

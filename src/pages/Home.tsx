@@ -66,6 +66,13 @@ const [practiceSelection, setPracticeSelection] = useState<
   string | number | null
 >(null)
 
+// --------------------------------
+// Practice Questions State
+// Stores the questions selected for
+// the current practice session.
+// --------------------------------
+const [practiceQuestions, setPracticeQuestions] = useState(questions)
+
 
   // --------------------------------
   // Exam Answers
@@ -135,12 +142,19 @@ const [practiceSelection, setPracticeSelection] = useState<
   // --------------------------------
   if (isExamStarted) {
     return (
-      <Exam
-        onFinish={(answers) => {
-          setExamAnswers(answers)
-          setIsExamFinished(true)
-        }}
-      />
+
+	{/* --------------------------------
+          Exam
+          Passes the questions selected
+          by the student into the exam.
+	-------------------------------- */}
+	<Exam
+        questions={practiceQuestions}
+          onFinish={(answers) => {
+            setExamAnswers(answers)
+            setIsExamFinished(true)
+          }}
+	/>
     )
   }
 
@@ -173,7 +187,6 @@ if (practiceMode) {
 // Finds questions matching the
 // student's selected practice option.
 // --------------------------------
-const filteredQuestions = questions.filter((question) => {
   if (practiceMode === 'Practice by Year') {
     return question.year === practiceSelection
   }
@@ -210,7 +223,26 @@ const filteredQuestions = questions.filter((question) => {
             {practiceChoices.map((choice) => (
               <button
                 key={choice}
-                onClick={() => setPracticeSelection(choice)}
+                onClick={() => {
+  const selectedQuestions = questions.filter((question) => {
+    if (practiceMode === 'Practice by Year') {
+      return question.year === choice
+    }
+
+    if (practiceMode === 'Practice by Subject') {
+      return question.subject === choice
+    }
+
+    if (practiceMode === 'Practice by Topic') {
+      return question.topic === choice
+    }
+
+    return false
+  })
+
+  setPracticeQuestions(selectedQuestions)
+  setIsExamStarted(true)
+}}
                 className="rounded-xl border border-slate-200 p-4 text-left font-semibold text-slate-900 hover:bg-slate-50"
               >
                 {choice}
