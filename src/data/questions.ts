@@ -7,6 +7,7 @@
 import { mathematicsQuestions } from './questions/mathematics'
 import { englishQuestions } from './questions/english'
 import { physicsQuestions } from './questions/physics'
+import { chemistryQuestions } from './questions/chemistry'
 
 // --------------------------------
 // All Questions
@@ -17,4 +18,5 @@ export const questions = [
   ...mathematicsQuestions,
   ...englishQuestions,
   ...physicsQuestions,
+  ...chemistryQuestions,
 ]
