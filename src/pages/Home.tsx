@@ -77,7 +77,7 @@ const [practiceSelection, setPracticeSelection] = useState<
   // Exam Answers
   // Stores answers received from Exam.
 // --------------------------------
-  const [examAnswers, setExamAnswers] = useState<Record<number, string>>({})
+  const [examAnswers, setExamAnswers] = useState<Record<string, string>>({})
 
   // --------------------------------
   // Exam Completion State

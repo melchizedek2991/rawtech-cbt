@@ -39,7 +39,7 @@ import SubmitConfirmation from '../components/exam/SubmitConfirmation'
 // --------------------------------
 type ExamProps = {
   questions: Question[]
-  onFinish: (answers: Record<number, string>) => void
+  onFinish: (answers: Record<string, string>) => void
 }
 
 
@@ -49,7 +49,7 @@ function Exam({ questions, onFinish }: ExamProps) {
 // Answers State
 // Stores the student's answer for each question
 // --------------------------------
-const [answers, setAnswers] = useState<Record<number, string>>({})
+const [answers, setAnswers] = useState<Record<string, string>>({})
 
 // --------------------------------
 // Current Question State

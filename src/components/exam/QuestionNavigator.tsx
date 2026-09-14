@@ -7,9 +7,9 @@
 
 type QuestionNavigatorProps = {
   questions: {
-    id: number
+    id: string
   }[]
-  answers: Record<number, string>
+  answers: Record<string, string>
   currentQuestionIndex: number
   onQuestionSelect: (index: number) => void
 }

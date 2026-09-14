@@ -5,7 +5,7 @@ type ResultsProps = {
   totalQuestions: number
   incorrectAnswers: number
   unansweredQuestions: number
-  answers: Record<number, string>
+  answers: Record<string, string>
   onRestart: () => void
 }
 

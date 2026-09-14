@@ -9,7 +9,7 @@ import type { Question } from '../../../types/question'
 // --------------------------------
 export const geometryQuestions: Question[] = [
   {
-    id: 4,
+    id: '4',
     year: 2025,
     subject: 'Mathematics',
     topic: 'Geometry',

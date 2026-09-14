@@ -6,7 +6,7 @@ import type { Question } from '../../types/question'
 
 export const physicsQuestions: Question[] = [
   {
-    id: 3,
+    id: '3',
     year: 2025,
     subject: 'Physics',
     topic: 'Motion',

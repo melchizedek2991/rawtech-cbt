@@ -1,3 +1,8 @@
+// --------------------------------
+// Shared RawTech Question Type
+// Used by both the frontend and backend.
+// --------------------------------
+
 export type Option = {
   label: string
   text: string
