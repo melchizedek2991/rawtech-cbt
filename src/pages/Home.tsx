@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import PracticeCard from '../components/PracticeCard'
 import Exam from './Exam'
 import Results from './Results'
-import { questions } from '../data/questions'
+import { getQuestions } from '../services/questionService'
+import type { Question } from '../../shared/question'
 
 // --------------------------------
 // Practice Selection Data
@@ -42,7 +43,6 @@ const practiceOptions = [
 // Home Page
 // --------------------------------
 function Home() {
-
   // --------------------------------
   // Exam Started State
   // Controls whether the Exam page
@@ -66,12 +66,36 @@ const [practiceSelection, setPracticeSelection] = useState<
   string | number | null
 >(null)
 
-  // --------------------------------
-  // Practice Questions State
-  // Stores the questions selected for
-  // the current practice session.
 // --------------------------------
-  const [practiceQuestions, setPracticeQuestions] = useState(questions)
+// Available Questions State
+// Stores all questions currently
+// available to the application.
+// --------------------------------
+const [availableQuestions, setAvailableQuestions] = useState<Question[]>([])
+
+// --------------------------------
+// Practice Questions State
+// Stores the questions selected
+// for the current practice session.
+// --------------------------------
+const [practiceQuestions, setPracticeQuestions] = useState<Question[]>([])
+
+    // --------------------------------
+  // Load Questions
+  // Gets questions through the
+  // question service.
+  // --------------------------------
+  useEffect(() => {
+    async function loadQuestions() {
+      const loadedQuestions = await getQuestions()
+
+      setAvailableQuestions(loadedQuestions)
+      setPracticeQuestions(loadedQuestions)
+    }
+
+    loadQuestions()
+  }, [])
+
 
   // --------------------------------
   // Exam Answers
@@ -133,7 +157,7 @@ const [practiceSelection, setPracticeSelection] = useState<
           setIsExamFinished(false)
           setIsExamStarted(false)
           setPracticeMode(null)
-          setPracticeQuestions(questions)
+          setPracticeQuestions(availableQuestions)
         }}
       />
     )
@@ -190,7 +214,7 @@ if (practiceMode) {
   // Finds questions matching the
   // student's selected choice.
   // --------------------------------
-  const selectedQuestions = questions.filter((question) => {
+  const selectedQuestions = availableQuestions.filter((question) => {
     if (practiceMode === 'Practice by Year') {
       return question.year === practiceSelection
     }
@@ -325,7 +349,7 @@ if (practiceMode) {
           -------------------------------- */}
           <button
             onClick={() => {
-              setPracticeQuestions(questions)
+              setPracticeQuestions(availableQuestions)
               setIsExamStarted(true)
             }}
             className="mt-8 rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white hover:bg-slate-700"
