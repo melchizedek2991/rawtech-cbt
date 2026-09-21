@@ -5,7 +5,6 @@ import Exam from './Exam'
 import Results from './Results'
 import { getQuestions } from '../services/questionService'
 import type { Question } from '../../shared/question'
-import type { ExamAttempt } from '../../shared/examAttempt'
 
 // --------------------------------
 // Practice Selection Data

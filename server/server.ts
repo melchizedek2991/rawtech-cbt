@@ -11,7 +11,7 @@ import questionsRouter from './routes/questions'
 const app = express()
 
 // Define the port where our backend server will run
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 // Health-check route
 app.get('/api/health', (req, res) => {
@@ -25,5 +25,5 @@ app.use('/api', questionsRouter)
 
 // Start the backend server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })

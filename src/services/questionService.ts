@@ -7,6 +7,10 @@
 import type { Question } from '../../shared/question'
 import { questions as localQuestions } from '../data/questions'
 
+// Use the deployed backend URL in production,
+// or the local Vite proxy path during development.
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
+
 // --------------------------------
 // Get Questions
 // Tries to get questions from our
@@ -17,7 +21,7 @@ import { questions as localQuestions } from '../data/questions'
 // --------------------------------
 export async function getQuestions(): Promise<Question[]> {
   try {
-    const response = await fetch('/api/questions?subject=mathematics')
+    const response = await fetch(`${API_BASE_URL}/questions?subject=mathematics`)
 
     if (!response.ok) {
       throw new Error('Unable to fetch questions from the backend')
