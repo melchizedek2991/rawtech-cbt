@@ -5,6 +5,8 @@ import Exam from './Exam'
 import Results from './Results'
 import { getQuestions } from '../services/questionService'
 import type { Question } from '../../shared/question'
+import type { ExamAttempt } from '../../shared/examAttempt'
+import { saveExamAttempt } from '../services/examAttemptService'
 
 // --------------------------------
 // Practice Selection Data
@@ -167,14 +169,85 @@ const [practiceQuestions, setPracticeQuestions] = useState<Question[]>([])
   // Show Exam
   // Passes the selected questions
   // into the Exam component.
-// --------------------------------
+  // --------------------------------
   if (isExamStarted) {
     return (
       <Exam
         questions={practiceQuestions}
         onFinish={(answers) => {
+          // --------------------------------
+          // Calculate the completed exam score
+          // using the answers received directly
+          // from the Exam component.
+          // --------------------------------
+          const attemptScore = practiceQuestions.reduce(
+            (total, question) => {
+              if (answers[question.id] === question.correctAnswer) {
+                return total + 1
+              }
+
+              return total
+            },
+            0
+          )
+
+          // --------------------------------
+          // Calculate unanswered questions
+          // using the completed answers.
+          // --------------------------------
+          const attemptUnansweredQuestions = practiceQuestions.reduce(
+            (total, question) => {
+              if (!answers[question.id]) {
+                return total + 1
+              }
+
+              return total
+            },
+            0
+          )
+
+          // --------------------------------
+          // Calculate incorrect answers.
+          // --------------------------------
+          const attemptIncorrectAnswers =
+            practiceQuestions.length -
+            attemptScore -
+            attemptUnansweredQuestions
+
+          // --------------------------------
+          // Create a record representing
+          // this completed exam attempt.
+          // --------------------------------
+          const attempt: ExamAttempt = {
+            id: crypto.randomUUID(),
+            date: new Date().toISOString(),
+            totalQuestions: practiceQuestions.length,
+            score: attemptScore,
+            incorrectAnswers: attemptIncorrectAnswers,
+            unansweredQuestions: attemptUnansweredQuestions,
+            answers,
+            questions: practiceQuestions,
+          }
+
+          // --------------------------------
+          // Save the completed exam attempt
+          // so it survives a browser refresh.
+          // --------------------------------
+          saveExamAttempt(attempt)
+
+          // --------------------------------
+          // Store answers so the Results
+          // page can display the result.
+          // --------------------------------
           setExamAnswers(answers)
           setIsExamFinished(true)
+
+          // --------------------------------
+          // Temporary verification.
+          // We will persist this attempt
+          // properly in a later step.
+          // --------------------------------
+          console.log('Completed exam attempt:', attempt)
         }}
       />
     )

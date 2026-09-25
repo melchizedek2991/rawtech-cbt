@@ -1,6 +1,13 @@
 // --------------------------------
-// Exam Attempt Type
-// Represents one completed CBT attempt.
+// Exam Attempt Types
+// Defines the information we keep
+// about a completed exam.
+// --------------------------------
+
+import type { Question } from './question'
+
+// --------------------------------
+// Exam Attempt
 // --------------------------------
 export type ExamAttempt = {
   id: string
@@ -10,4 +17,8 @@ export type ExamAttempt = {
   incorrectAnswers: number
   unansweredQuestions: number
   answers: Record<string, string>
+
+  // Questions used in this particular
+  // exam attempt.
+  questions: Question[]
 }
